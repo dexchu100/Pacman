@@ -1,0 +1,112 @@
+#include <iostream>
+#include "gotoxy.h"
+#include "windows.h"
+#include <string>
+#include <fstream>
+#include <vector>
+
+using namespace std;
+
+void clearScreen(void)
+{
+  system("cls");
+}
+
+
+bool check(int x, int y, vector<string>& gamemap)
+{
+    bool tf = true;
+    string line = gamemap[y];
+    if(line[x] == '#')
+    {
+        tf = false;
+    }
+
+    return (tf);
+}
+
+
+int main()
+{
+
+    vector<string>gamemap;
+    int x=1;
+    int y=1;
+    bool game_running = true;
+
+    ifstream mapFile;
+    string filename, out;
+
+    cout << "Enter the map file you want to use: ";
+    getline(cin, filename);
+    mapFile.open(filename);
+
+        if(mapFile)
+        {
+            while(getline(mapFile,out))
+            {
+                gamemap.push_back(out);
+            }
+        }
+        else
+        {
+            cout << "error";
+        }
+
+    clearScreen();
+
+
+    do{
+        gotoxy(0,0);
+
+        for(int i = 0; i < gamemap.size(); i++)
+        {
+            cout << gamemap[i] << endl;
+        }
+
+        cout << "Press esc to end game";
+
+
+        system("pause>nul");
+
+        if(GetAsyncKeyState(VK_DOWN) && check(x, (y + 1), gamemap) ){
+        gamemap[y][x] = ' ';
+        y += 1;
+        gamemap[y][x]= '@';
+
+
+        }
+
+
+        if(GetAsyncKeyState(VK_UP) &&  check(x, (y - 1), gamemap)){
+        gamemap[y][x] = ' ';
+        y -= 1;
+        gamemap[y][x]= '@';
+
+        }
+
+        if(GetAsyncKeyState(VK_RIGHT) && check((x + 1), y, gamemap)){
+        gamemap[y][x] = ' ';
+        x += 1;
+        gamemap[y][x]= '@';
+
+        }
+
+        if(GetAsyncKeyState(VK_LEFT) &&  check((x - 1), y, gamemap)){
+        gamemap[y][x] = ' ';
+        x -= 1;
+        gamemap[y][x]= '@';
+
+        }
+
+        if(GetAsyncKeyState(VK_ESCAPE)){
+            game_running = false;
+        }
+
+    }while(game_running == true);
+
+    system("cls");
+    cout << "GAME OVER";
+
+    return 0;
+}
